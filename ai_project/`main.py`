@@ -1,0 +1,33 @@
+```python
+import logging
+import os
+import requests
+from telegram.ext import Updater, CommandHandler, MessageHandler
+from sentiment_analysis import analyze_sentiment
+from crypto_news import get_crypto_news
+
+logging.basicConfig(level=logging.INFO)
+
+TOKEN = os.environ['TELEGRAM_TOKEN']
+CHAT_ID = os.environ['TELEGRAM_CHAT_ID']
+
+def start(update, context):
+    context.bot.send_message(chat_id=CHAT_ID, text='Crypto news bot started!')
+
+def send_news(update, context):
+    news = get_crypto_news()
+    for article in news:
+        sentiment = analyze_sentiment(article['text'])
+        context.bot.send_message(chat_id=CHAT_ID, text=f"{article['title']}\n{article['url']}\nSentiment: {sentiment}")
+
+def main():
+    updater = Updater(TOKEN, use_context=True)
+    dp = updater.dispatcher
+    dp.add_handler(CommandHandler('start', start))
+    dp.add_handler(CommandHandler('send_news', send_news))
+    updater.start_polling()
+    updater.idle()
+
+if __name__ == '__main__':
+    main()
+```

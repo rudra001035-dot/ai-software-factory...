@@ -1,0 +1,17 @@
+```dockerfile
+FROM python:3.9-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+
+RUN pip install -r requirements.txt
+
+COPY . .
+
+ENV TELEGRAM_TOKEN=
+ENV TELEGRAM_CHAT_ID=
+ENV NEWS_API_KEY=
+
+CMD ["python", "main.py"]
+```
